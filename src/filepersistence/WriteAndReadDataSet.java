@@ -49,18 +49,18 @@ public class WriteAndReadDataSet {
             System.exit(0); // brutal exception handling
         }
         //alle Messwerte eintragen
-        for (int i = 0; i < 3;  i++){
-            try{
+        for (float[] value : values) {
+            try {
                 dos.writeUTF(sensorName);
-                for(int j = 0; j < values[i].length; j++){
+                for (int j = 0; j < value.length; j++) {
                     dos.writeUTF(abstand2);
                     dos.writeLong(timeStamps[j]);
                     dos.writeUTF(abstand2);
-                    dos.writeFloat(values[i][j]);
+                    dos.writeFloat(value[j]);
                 }
                 dos.writeUTF(abstand);
 
-            }catch (IOException ex){
+            } catch (IOException ex) {
                 System.err.println("couldn’t write data (fatal)");
                 System.exit(0);
             }
@@ -79,16 +79,16 @@ public class WriteAndReadDataSet {
             System.exit(0);
         }
         System.out.println("Aufbau: Sensorname/Zeit/Wert/.../Zeit/Wert");
-        for (int i = 0; i < 3;  i++){
-            try{
+        for (float[] value : values) {
+            try {
                 String a = dis.readUTF();
                 System.out.print(a);
-                for(int j = 0; j < values[i].length; j++){
+                for (int j = 0; j < value.length; j++) {
                     String b = dis.readUTF();
                     System.out.print(b);
                     long c = dis.readLong();
                     System.out.print(c);
-                    String d =dis.readUTF();
+                    String d = dis.readUTF();
                     System.out.print(d);
                     float e = dis.readFloat();
                     System.out.print(e);
@@ -96,7 +96,7 @@ public class WriteAndReadDataSet {
                 String f = dis.readUTF();
                 System.out.print(f);
 
-            }catch (IOException ex){
+            } catch (IOException ex) {
                 System.err.println("couldn’t write data (fatal)");
                 System.exit(0);
             }
