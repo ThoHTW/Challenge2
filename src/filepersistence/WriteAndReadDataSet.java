@@ -8,8 +8,6 @@ public class WriteAndReadDataSet {
         final String filename = "testFile.txt";
         // three example data sets
         String sensorName = "MyGoodOldSensor"; // does not change
-        String abstand = "\n";
-        String abstand2 = "/";
 
         long[] timeStamps = new long[3];
         timeStamps[0] = System.currentTimeMillis();
@@ -46,23 +44,18 @@ public class WriteAndReadDataSet {
             dos = new DataOutputStream(os);
         } catch (FileNotFoundException ex) {
             System.err.println("couldn’t open file - fatal");
-            System.exit(0); // brutal exception handling
         }
         //alle Messwerte eintragen
         for (float[] value : values) {
             try {
+                assert dos != null;
                 dos.writeUTF(sensorName);
                 for (int j = 0; j < value.length; j++) {
-                    dos.writeUTF(abstand2);
                     dos.writeLong(timeStamps[j]);
-                    dos.writeUTF(abstand2);
                     dos.writeFloat(value[j]);
                 }
-                dos.writeUTF(abstand);
-
             } catch (IOException ex) {
                 System.err.println("couldn’t write data (fatal)");
-                System.exit(0);
             }
         }
 
@@ -76,29 +69,24 @@ public class WriteAndReadDataSet {
             dis = new DataInputStream(is);
         } catch (FileNotFoundException ex) {
             System.err.println("couldn’t open file - fatal");
-            System.exit(0);
         }
         System.out.println("Aufbau: Sensorname/Zeit/Wert/.../Zeit/Wert");
         for (float[] value : values) {
             try {
+                assert dis != null;
                 String a = dis.readUTF();
                 System.out.print(a);
                 for (int j = 0; j < value.length; j++) {
-                    String b = dis.readUTF();
-                    System.out.print(b);
+                    System.out.print("/");
                     long c = dis.readLong();
                     System.out.print(c);
-                    String d = dis.readUTF();
-                    System.out.print(d);
+                    System.out.print("/");
                     float e = dis.readFloat();
                     System.out.print(e);
                 }
-                String f = dis.readUTF();
-                System.out.print(f);
-
+                System.out.print("\n");
             } catch (IOException ex) {
                 System.err.println("couldn’t write data (fatal)");
-                System.exit(0);
             }
         }
     }
