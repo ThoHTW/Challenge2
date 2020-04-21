@@ -7,6 +7,9 @@ import org.junit.Test;
 import java.util.Arrays;
 
 public class WriteAndReadDataSetTest {
+    //Problem: void Methode hat keine Rückgabe.
+    //Derzeitige "Lösung": Erwartete werte mit übergebenen werten vergleichen
+    //mögliche Lösung für die zukunft: void methode auf String[] umschreiben
 
     @Test
     public void gutTest1() throws Exception {
