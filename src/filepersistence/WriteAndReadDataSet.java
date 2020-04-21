@@ -2,40 +2,26 @@ package filepersistence;
 
 import java.io.*;
 
-public class WriteAndReadDataSet {
+public class WriteAndReadDataSet implements SensorDataStorage{
 
-    public static void main(String[] args) {
-        final String filename = "testFile.txt";
-        // three example data sets
-        String sensorName = "MyGoodOldSensor"; // does not change
+    public static void main (String[] Args){
+        WriteAndReadDataSet obj1 = new WriteAndReadDataSet();
+        String name = "name";
+        long time = System.currentTimeMillis();
+        float[] values = {Float.MAX_VALUE+1, 7, 3};
+        try {
+            obj1.saveData(name, time, values);
+        }catch (Exception e){
+            System.out.println("saveDara konnte nicht ausgeführt werden");
+        }
+    }
 
-        long[] timeStamps = new long[3];
-        timeStamps[0] = System.currentTimeMillis();
-        timeStamps[1] = timeStamps[0] + 1; // milli sec later
-        timeStamps[2] = timeStamps[1] + 1000; // second later
+    @Override
+    public void saveData(String name, long time, float[] values) throws Exception{
 
-        float[][] values = new float[3][];
-        // 1st measure .. just one value
-        float[] valueSet = new float[1];
-        values[0] = valueSet;
-        valueSet[0] = (float) 1.5; // example value 1.5 degrees
-
-        // 2nd measure .. just three values
-        valueSet = new float[3];
-        values[1] = valueSet;
-        valueSet[0] = (float) 0.7;
-        valueSet[1] = (float) 1.2;
-        valueSet[2] = (float) 2.1;
-
-        // 3rd measure .. two values
-        valueSet = new float[2];
-        values[2] = valueSet;
-        valueSet[0] = (float) 0.7;
-        valueSet[1] = (float) 1.2;
-
+        final String filename = "testText";
         // write three data set into a file
         // TODO: your job. use DataOutputStream / FileOutputStream
-        //3 Messwerte
         //Outputstream eröffnen
         OutputStream os;
         DataOutputStream dos = null;
@@ -46,18 +32,19 @@ public class WriteAndReadDataSet {
             System.err.println("couldn’t open file - fatal");
         }
         //alle Messwerte eintragen
-        for (float[] value : values) {
             try {
                 assert dos != null;
-                dos.writeUTF(sensorName);
-                for (int j = 0; j < value.length; j++) {
-                    dos.writeLong(timeStamps[j]);
-                    dos.writeFloat(value[j]);
+                dos.writeUTF(name);
+                if(time > Long.MAX_VALUE | time < Long.MIN_VALUE) throw new Exception();
+                dos.writeLong(time);
+                for (float value : values) {
+                    if(value > Float.MAX_VALUE | value < Float.MIN_VALUE) throw new Exception();
+                    dos.writeFloat(value);
                 }
             } catch (IOException ex) {
                 System.err.println("couldn’t write data (fatal)");
             }
-        }
+
 
         // read data from file and print to System.out
         // TODO: your job use DataInputStream / FileInputStream
@@ -70,19 +57,16 @@ public class WriteAndReadDataSet {
         } catch (FileNotFoundException ex) {
             System.err.println("couldn’t open file - fatal");
         }
-        System.out.println("Aufbau: Sensorname/Zeit/Wert/.../Zeit/Wert");
-        for (float[] value : values) {
+        System.out.println("Aufbau: Sensorname/Zeit/Wert");
             try {
                 assert dis != null;
                 String a = dis.readUTF();
-                System.out.print(a);
-                for (int j = 0; j < value.length; j++) {
-                    System.out.print("/");
-                    long c = dis.readLong();
-                    System.out.print(c);
-                    System.out.print("/");
+                System.out.print(a+" ");
+                long c = dis.readLong();
+                System.out.print(c+" ");
+                for (int j = 0; j < values.length; j++) {
                     float e = dis.readFloat();
-                    System.out.print(e);
+                    System.out.print(e+" ");
                 }
                 System.out.print("\n");
             } catch (IOException ex) {
@@ -90,6 +74,5 @@ public class WriteAndReadDataSet {
             }
         }
     }
-}
 
 
